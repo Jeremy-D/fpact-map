@@ -11,25 +11,31 @@
 
     <div id="features-bar" class="features-bar">
       <div class="search-bar" id="search-bar">
-        <label>search:</label>
-        <input type="text" name="">
-        <input type="submit" name="">
+        <label>Search:</label>
+        <input type="text" id="search-input" placeholder="Enter a location">
+        <input type="submit" id="submit">
       </div>
 
       <div id="set-radius" class="set-radius">
         <p>Set Radius</p>
-        <select>
+        <select id="radius-select">
           <option value="5">5 Miles</option>
           <option value="10">10 Miles</option>
           <option value="15">15 Miles</option>
           <option value="25">25 Miles</option>
-          <option value="1000">View All</option>
+          <option value="1500">View All</option>
         </select>  
+      </div>
+
+      <div id="test-btn-container">
+        <button id="test-btn">test me</button>
+        <button id="test-btn-2"> test 2</button>
       </div>
     </div>
 
-    <script type="text/javascript" src="scripts.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDlGFS7WRtZPiDUsfp7H_j45y2zh1PGbj4&libraries=geometry,places&callback=initMap"
+    <script type="text/javascript" src="scripts.js"></script>    
+    <script type="text/javascript" src="eventListeners.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMModozOAsG0_cvzSrmvsVYAYwrJY5ae4&libraries=geometry,places&callback=initMap"
     async defer></script>
   </body>
 </html>
