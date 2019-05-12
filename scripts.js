@@ -11,6 +11,26 @@ function initMap() {
     zoom: 11
   });
 
+  map.addListener("click", function(event){
+    let lat = event.latLng.lat()
+    let lng = event.latLng.lng()
+    let userCenter = new google.maps.LatLng(lat, lng)
+    let userRadius = Number(radiusSelect.value) * 1609;
+    console.log(typeof radiusSelect.value)
+    deleteMarkers()
+    addNearestMarkers(fpactData, userCenter, userRadius);
+  })
+
+  //basically same as add marker
+  function placeMarker(location) {
+    var marker = new google.maps.Marker({
+        position: location, 
+        map: map
+    });
+  }
+
+
+  //autocomplete bs ===============================
   var autocomplete = new google.maps.places.Autocomplete(searchInput);
   // console.log(autocomplete)
 
@@ -25,7 +45,6 @@ function initMap() {
 
   autocomplete.addListener('place_changed', function(){
     let place = autocomplete.getPlace();
-    console.log(place)
      if (!place.geometry) {
           // User entered the name of a Place that was not suggested and
           // pressed the Enter key, or the Place Details request failed.
@@ -35,7 +54,6 @@ function initMap() {
       })
 
   // SEPARATE THE BELOW LOGIC INTO ANOTHER FUNCTION
-  console.log(place.geometry.location)
   // // If the place has a geometry, then present it on a map.
   // if (place.geometry.viewport) {
   //   map.fitBounds(place.geometry.viewport);
@@ -45,6 +63,7 @@ function initMap() {
   // }
   // marker.setPosition(place.geometry.location);
   // marker.setVisible(true);
+  //end autocomplete bs================================================
 }
 console.dir(map)
 
@@ -88,9 +107,9 @@ fetch(proxyurl + url1)
   //radius - number (in miles) function converts radius from meters to miles 
   //===============================================
  	function addNearestMarkers(geojson, center, radius){
+
  		geojson.features.forEach(feature=>{
  			let newPoint = new google.maps.LatLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0])
- 			console.log(radius);
 
  			//computeDistanceBetween is part of google maps geometry library loaded in html
  			if(google.maps.geometry.spherical.computeDistanceBetween(newPoint, center) < radius){
@@ -145,6 +164,11 @@ function autoComplete(){
     })
     markers.push(marker)
   }
+
+  //===============================================
+  // CLICK TO RECENTER
+  //===============================================
+
 
 
 

@@ -1,3 +1,6 @@
+//TO DO
+// figure out maps API and eventlisteners
+
 let btn = document.getElementById('test-btn');
 let btnTestes2 = document.getElementById('test-btn-2')
 let radiusSelect = document.getElementById('radius-select');
@@ -38,4 +41,15 @@ submitBtn.addEventListener("click", function(){
 //let autocomplete = new google.maps.places.Autocomplete(searchInput);
 
 console.dir(radiusSelect.value);
+
+//===============================================
+//MAP LISTENERS
+//===============================================
+
+// map.addListener("click", function(){
+// 	console.log("clicked")
+// 	deleteMarkers()
+// })
+
+
 
