@@ -18,7 +18,12 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	width: 300px;
 	/*	background-color: lavender;*/
+}
+
+.search-input {
+	width: 300px;
 }
 
 .set-radius {

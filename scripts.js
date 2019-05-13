@@ -110,6 +110,10 @@ fetch(proxyurl + url1)
         //add infoWindow
         infoContent = feature.properties;
 
+        //place request
+        //let address = infoContent
+
+
         contentString = `<div class=info-window-container>
       <h1>`+ infoContent.Provider_Businness_Legal_Name +`</h1>
       <p>Alias` + infoContent.Provider_Address_Attention_Line + `</p>
@@ -195,9 +199,41 @@ function autoComplete(){
   }
 
   //===============================================
-  // CLICK TO RECENTER
+  // address query test
+  //-- get's the phone number
   //===============================================
+  let service
+  let testAddress = 'HOLLYWOOD WILSHIRE HLTH'
+  let testAddress2 = 'PLANNED PARENTHOOD ASSC, SAN JOSE, CA, 95126'
+  //works! add to markers 
+  function testAddressQuery(){
+    let request = {
+      query: testAddress2,
+      fields: ['name', 'geometry', 'place_id'],
+    };
+    
+    service = new google.maps.places.PlacesService(map);
 
+    let details = service.findPlaceFromQuery(request, function(results, status) {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        console.log(results[0].place_id)
+        let requestDetails = {
+          placeId: results[0].place_id,
+          fields: ['name', 'formatted_address', 'formatted_phone_number', 'place_id', 'geometry']
+        }
+
+        service.getDetails(requestDetails, function(place, status){
+          if (status === google.maps.places.PlacesServiceStatus.OK) {
+            console.log(place)
+          }
+        })
+        
+      } else {
+        //return "sorry we can't seem to find that location"
+        console.log("sorry we can't seem to find that location")
+      }
+    });
+  }
 
 
 

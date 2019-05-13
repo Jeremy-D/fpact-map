@@ -20,7 +20,10 @@ btn.addEventListener("click", function(){
 	//map.setCenter(new google.maps.LatLng(37.3382, -121.8863))
 
 	//test4
-	addAllMarkers(fpactData)
+	//addAllMarkers(fpactData)
+
+	//test5
+	testAddressQuery()
 
 
 	let iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
