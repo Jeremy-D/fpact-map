@@ -102,16 +102,21 @@ fetch(proxyurl + url1)
   //===============================================
  	function addNearestMarkers(geojson, center, radius){
     let contentString = '';
+    console.log(geojson);
  		geojson.features.forEach(feature=>{
  			let newPoint = new google.maps.LatLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0])
  			//computeDistanceBetween is part of google maps geometry library loaded in html
  			if(google.maps.geometry.spherical.computeDistanceBetween(newPoint, center) < radius){
- 				//add marker
-        addMarker(feature.geometry.coordinates[1], feature.geometry.coordinates[0])
-        contentString = "<div class=info-window-container>" + feature +"</div>"
+        //add infoWindow
+        infoContent = feature.properties;
+
+        console.log(infoContent)
         let infowindow = new google.maps.InfoWindow({
-          content: contentString
+          content: infoContent.Provider_Businness_Legal_Name
         })
+
+ 				//add marker
+        addMarker(feature.geometry.coordinates[1], feature.geometry.coordinates[0], infowindow)
  			}
  		})
  	}
@@ -151,7 +156,7 @@ function autoComplete(){
   //===============================================
   // ADD MARKER
   //===============================================
-  function addMarker(lat, lng){
+  function addMarker(lat, lng, infoWindow){
     let marker = new google.maps.Marker({
       position: {
         lat: lat, 
@@ -159,6 +164,21 @@ function autoComplete(){
       },
       map: map
     })
+
+    let infowindow = infoWindow;
+
+    console.log(infoContent)
+    //infoWindow param might break addAllMarkers function
+    // let infowindow = new google.maps.InfoWindow({
+    //   content: 'hello';
+    // })
+
+    console.log(infowindow)
+
+    marker.addListener('click', function() {
+      infowindow.open(map, marker);
+    });
+
     markers.push(marker)
   }
 
