@@ -11,6 +11,7 @@ function initMap() {
     zoom: 11
   });
 
+  //click to change data ===============================
   map.addListener("click", function(event){
     let lat = event.latLng.lat()
     let lng = event.latLng.lng()
@@ -21,16 +22,10 @@ function initMap() {
     addNearestMarkers(fpactData, userCenter, userRadius);
   })
 
-  //basically same as add marker
-  function placeMarker(location) {
-    var marker = new google.maps.Marker({
-        position: location, 
-        map: map
-    });
-  }
+  //click to change data end===============================
 
 
-  //autocomplete bs ===============================
+  //autocomplete function ===============================
   var autocomplete = new google.maps.places.Autocomplete(searchInput);
   // console.log(autocomplete)
 
@@ -45,27 +40,26 @@ function initMap() {
 
   autocomplete.addListener('place_changed', function(){
     let place = autocomplete.getPlace();
-     if (!place.geometry) {
-          // User entered the name of a Place that was not suggested and
-          // pressed the Enter key, or the Place Details request failed.
-          window.alert("No details available for input: '" + place.name + "'");
-          return;
-        }
-      })
+    if (!place.geometry) {
+      // User entered the name of a Place that was not suggested and
+      // pressed the Enter key, or the Place Details request failed.
+      window.alert("No details available for input: '" + place.name + "'");
+      return;
+    }
+    console.log(place)
 
-  // SEPARATE THE BELOW LOGIC INTO ANOTHER FUNCTION
-  // // If the place has a geometry, then present it on a map.
-  // if (place.geometry.viewport) {
-  //   map.fitBounds(place.geometry.viewport);
-  // } else {
-  //   map.setCenter(place.geometry.location);
-  //   map.setZoom(17);  // Why 17? Because it looks good.
-  // }
-  // marker.setPosition(place.geometry.location);
-  // marker.setVisible(true);
-  //end autocomplete bs================================================
+    let lat = place.geometry.location.lat()
+    let lng = place.geometry.location.lng()
+    let autoCompleteCenter = new google.maps.LatLng(lat, lng);
+
+    map.setCenter(place.geometry.location);
+    let autoCompleteRadius = Number(radiusSelect.value) * 1609;
+    deleteMarkers();
+    addNearestMarkers(fpactData, place.geometry.location, autoCompleteRadius)
+  })
+  //end autocomplete function================================================
 }
-console.dir(map)
+
 
 //===============================================
 //FETCH DATA
@@ -107,14 +101,17 @@ fetch(proxyurl + url1)
   //radius - number (in miles) function converts radius from meters to miles 
   //===============================================
  	function addNearestMarkers(geojson, center, radius){
-
+    let contentString = '';
  		geojson.features.forEach(feature=>{
  			let newPoint = new google.maps.LatLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0])
-
  			//computeDistanceBetween is part of google maps geometry library loaded in html
  			if(google.maps.geometry.spherical.computeDistanceBetween(newPoint, center) < radius){
  				//add marker
         addMarker(feature.geometry.coordinates[1], feature.geometry.coordinates[0])
+        contentString = "<div class=info-window-container>" + feature +"</div>"
+        let infowindow = new google.maps.InfoWindow({
+          content: contentString
+        })
  			}
  		})
  	}

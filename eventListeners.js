@@ -36,11 +36,11 @@ searchInput.addEventListener("mouseover", function(){
 })
 
 submitBtn.addEventListener("click", function(){
-	console.log(searchInput.value);
+	//console.log(searchInput.value);
 })
 //let autocomplete = new google.maps.places.Autocomplete(searchInput);
 
-console.dir(radiusSelect.value);
+
 
 //===============================================
 //MAP LISTENERS
