@@ -110,9 +110,21 @@ fetch(proxyurl + url1)
         //add infoWindow
         infoContent = feature.properties;
 
+        contentString = `<div class=info-window-container>
+      <h1>`+ infoContent.Provider_Businness_Legal_Name +`</h1>
+      <p>Alias` + infoContent.Provider_Address_Attention_Line + `</p>
+      <p>City: ` + infoContent.Provider_Address_City +`</p>
+      <p>County: ` + infoContent.Provider_Address_County_Code_De +`</p>
+      <p>Zip: ` + infoContent.Provider_Address_Zip +` </p>
+      <p>Phone: ` + 'phone number needed, google maps places API?' +` </p>
+      <p>Type of Center: ` + infoContent.Provider_Type_Code_Desc +`</p>
+    </div>`
+
+
         console.log(infoContent)
         let infowindow = new google.maps.InfoWindow({
-          content: infoContent.Provider_Businness_Legal_Name
+          //content: infoContent.Provider_Businness_Legal_Name
+          content: contentString
         })
 
  				//add marker
