@@ -43,7 +43,7 @@ function initMap() {
     if (!place.geometry) {
       // User entered the name of a Place that was not suggested and
       // pressed the Enter key, or the Place Details request failed.
-      window.alert("No details available for input: '" + place.name + "'");
+      window.alert("No details available for input: '" + place.name + "'." + ' Try clicking a point on the map or clicking one of the Search suggestions if problems persist.');
       return;
     }
     console.log(place)
