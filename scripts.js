@@ -2,6 +2,7 @@
 let map;
 //track markers to delete
 let markers = [];
+let infowindow;
 //===============================================
 //INIT MAP
 //===============================================
@@ -195,19 +196,26 @@ function autoComplete(){
   //===============================================
   // address query test
   //-- get's the phone number
+  //figure out async await stuff
   //===============================================
-  let service
-  let testAddress = 'HOLLYWOOD WILSHIRE HLTH'
-  let testAddress2 = 'PLANNED PARENTHOOD ASSC, SAN JOSE, CA, 95126'
-  //works! add to markers 
-  function testAddressQuery(){
+  let testAddress = 'HOLLYWOOD WILSHIRE HLTH';
+  //let testAddress2 = 'PLANNED PARENTHOOD ASSC, SAN JOSE, CA, 95126';
+  //works! add to markers
+
+  let superTest;
+
+
+  function getPlacesData(address){
     let request = {
-      query: testAddress2,
-      fields: ['name', 'geometry', 'place_id'],
+      query: address,
+      fields: ['name', 'geometry', 'place_id']
     };
     
-    service = new google.maps.places.PlacesService(map);
+    let service = new google.maps.places.PlacesService(map);
 
+    let newPlace;
+
+    //async func 1 - getPlaceID()
     let details = service.findPlaceFromQuery(request, function(results, status) {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
         console.log(results[0].place_id)
@@ -216,23 +224,77 @@ function autoComplete(){
           fields: ['name', 'formatted_address', 'formatted_phone_number', 'place_id', 'geometry']
         }
 
-        service.getDetails(requestDetails, function(place, status){
+        //async func 2 - getDetails()
+        let level2Data = service.getDetails(requestDetails, function(place, status){
           if (status === google.maps.places.PlacesServiceStatus.OK) {
-            console.log(place)
+            //marker must be added at this point to get async data like phone number from Places API
+            superTest = place;
+            console.log('superTest');
+            console.log(superTest);
+            console.log('place');
+            console.log(place);
+            return place
           }
         })
-        
       } else {
-        //return "sorry we can't seem to find that location"
-        console.log("sorry we can't seem to find that location")
-      }
-    });
-  }
+          //return "sorry we can't seem to find that location"
+          console.log("sorry we can't seem to find that location")
+        }
+      //return level2Data
+      //return newPlace;
+      });
+    console.log(details);
+    return details
+    }
+
+    //--private to getPlacesData()=================================================
+
+    //================== 
+    //getPlaceID() takes an address and returns a place ID
+    //================== 
+    function getPlaceID(address, service){
+      let request = {
+        query: address,
+        fields: ['name', 'geometry', 'place_id']
+      };
+      //Initiate Google PlacesService
+      let placeService = new google.maps.places.PlacesService(map);
+      //findPlaceFromQuery() call
+
+      let details1 = placeQueryAsync(request, placeService, pQAHelper);
+
+      console.log(details1);
+      return details1;
+    }
+
+    //================== 
+    //placeQueryAsync(){}
+    //service.findPlaceFromQuery() needs to be wrapped in a function
+    //that returns a promise
+    //================== 
+    function placeQueryAsync(request, service, fn){
+      service.findPlaceFromQuery(request, function(results, status) {   
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          fn(results[0].place_id)
+        } else {
+            console.log("sorry we can't seem to find that location")
+          }
+        })
+    };
+
+    let pleaseWork;
+
+    function pQAHelper(code){
+      pleaseWork = code;
+    }
+
+
+
 
   //===============================================
   // addInfoWindowToMarker()
   //===============================================
-  function addInfoWindowToMarker(marker, infowindow){
+  function addInfoWindowToMarker(marker, infowindow, content){
       marker.addListener('click', function() {
       infowindow.open(map, marker);
     });
