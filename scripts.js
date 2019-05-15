@@ -69,7 +69,9 @@ function initMap() {
 const proxyurl = "https://cors-anywhere.herokuapp.com/";
 let url1 = 'http://dhcs-chhsagency.opendata.arcgis.com/datasets/a2742f60dd944a1fa49377bd0e8a7772_0.geojson';
 let fpactData;
-fetch(proxyurl + url1)
+//fetch(proxyurl + url1)
+
+fetch(url1)  
   .then(function(response) {
     return response.json();
   })
@@ -126,13 +128,9 @@ fetch(proxyurl + url1)
 
 
         console.log(infoContent)
-        let infowindow = new google.maps.InfoWindow({
-          //content: infoContent.Provider_Businness_Legal_Name
-          content: contentString
-        })
 
  				//add marker
-        addMarker(feature.geometry.coordinates[1], feature.geometry.coordinates[0], infowindow)
+        addMarker(feature.geometry.coordinates[1], feature.geometry.coordinates[0], contentString)
  			}
  		})
  	}
@@ -172,7 +170,7 @@ function autoComplete(){
   //===============================================
   // ADD MARKER
   //===============================================
-  function addMarker(lat, lng, infoWindow){
+  function addMarker(lat, lng, contentString){
     let marker = new google.maps.Marker({
       position: {
         lat: lat, 
@@ -181,19 +179,15 @@ function autoComplete(){
       map: map
     })
 
-    let infowindow = infoWindow;
-
     console.log(infoContent)
     //infoWindow param might break addAllMarkers function
-    // let infowindow = new google.maps.InfoWindow({
-    //   content: 'hello';
-    // })
+    let infowindow = new google.maps.InfoWindow({
+      content: contentString
+    })
 
     console.log(infowindow)
 
-    marker.addListener('click', function() {
-      infowindow.open(map, marker);
-    });
+    addInfoWindowToMarker(marker, infowindow);
 
     markers.push(marker)
   }
@@ -235,6 +229,14 @@ function autoComplete(){
     });
   }
 
+  //===============================================
+  // addInfoWindowToMarker()
+  //===============================================
+  function addInfoWindowToMarker(marker, infowindow){
+      marker.addListener('click', function() {
+      infowindow.open(map, marker);
+    });
+  }
 
 
 
