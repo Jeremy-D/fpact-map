@@ -3,7 +3,7 @@ let map;
 //track markers to delete
 let markers = [];
 //set infowindow to be accessible when creating marker
-let infowindow; //= new google.maps.InfoWindow();
+//let infowindow;
 //===============================================
 //INIT MAP
 //===============================================
@@ -94,6 +94,9 @@ fetch(url1)
 //radius - number (in miles) function converts radius from meters to miles 
 //===============================================
 function addNearestMarkers(geojson, center, radius){
+let infoWindowBase = new google.maps.InfoWindow({
+  content: 'YOLO'
+});
 let contentString = '';
 console.log(geojson);
 	geojson.features.forEach(feature=>{
@@ -113,7 +116,7 @@ console.log(geojson);
         <p>Type of Center: ` + infoContent.Provider_Type_Code_Desc +`</p>
       </div>`
 			//add marker
-      addMarker(feature.geometry.coordinates[1], feature.geometry.coordinates[0], contentString)
+      addMarker(feature.geometry.coordinates[1], feature.geometry.coordinates[0], contentString, infoWindowBase)
 		}
 	})
 }
@@ -122,21 +125,24 @@ console.log(geojson);
 //===============================================
 // ADD MARKER
 //===============================================
-function addMarker(lat, lng, contentString){
+function addMarker(lat, lng, contentString, infowindow){
   let marker = new google.maps.Marker({
     position: {
       lat: lat, 
       lng: lng
     },
-    map: map
+    map: map,
+    //infoContent not part of default marker attributes
+    infoContent: contentString
   })
 
-  let infowindow = new google.maps.InfoWindow({
-    content: contentString
+  marker.addListener('click', function(){
+    infowindow.setContent(marker.infoContent);
+    console.log(infowindow)
+    //addInfoWindowToMarker(marker, altInfoWindow)
+    infowindow.open(map, marker)
   })
-  console.log(marker)
-  console.log(infowindow)
-  addInfoWindowToMarker(marker, infowindow);
+
   markers.push(marker)
 }
 
