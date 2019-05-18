@@ -2,6 +2,7 @@
 let map;
 //track markers to delete
 let markers = [];
+//set infowindow to be accessible when creating marker
 let infowindow;
 //===============================================
 //INIT MAP
@@ -17,8 +18,8 @@ function initMap() {
     let lat = event.latLng.lat()
     let lng = event.latLng.lng()
     let userCenter = new google.maps.LatLng(lat, lng)
+    //convert radius from meters to miles
     let userRadius = Number(radiusSelect.value) * 1609;
-    console.log(typeof radiusSelect.value)
     deleteMarkers()
     addNearestMarkers(fpactData, userCenter, userRadius);
   })
@@ -28,8 +29,6 @@ function initMap() {
 
   //autocomplete function ===============================
   var autocomplete = new google.maps.places.Autocomplete(searchInput);
-  // console.log(autocomplete)
-
   // Bind the map's bounds (viewport) property to the autocomplete object,
   // so that the autocomplete requests use the current map bounds for the
   // bounds option in the request.
@@ -47,7 +46,6 @@ function initMap() {
       window.alert("No details available for input: '" + place.name + "'." + ' Try clicking a point on the map or clicking one of the Search suggestions if problems persist.');
       return;
     }
-    console.log(place)
 
     let lat = place.geometry.location.lat()
     let lng = place.geometry.location.lng()
@@ -81,7 +79,6 @@ fetch(url1)
     let center = new google.maps.LatLng(34.0522, -118.2437)
     let radius = 5 * 1609; // convert meters to miles
     addNearestMarkers(data, center, radius);
-
   });
 
   //===============================================
@@ -126,10 +123,6 @@ fetch(url1)
       <p>Phone: ` + 'phone number needed, google maps places API?' +` </p>
       <p>Type of Center: ` + infoContent.Provider_Type_Code_Desc +`</p>
     </div>`
-
-
-        console.log(infoContent)
-
  				//add marker
         addMarker(feature.geometry.coordinates[1], feature.geometry.coordinates[0], contentString)
  			}
@@ -137,36 +130,26 @@ fetch(url1)
  	}
 
   //===============================================
-  // PLACES SEARCH
-  //===============================================
-  //autocomplete
-function autoComplete(){
-   //let autocomplete = new google.maps.places.Autocomplete(searchInput);
-   //console.log(autocomplete)
-}
-
-
-  //===============================================
   // CLEAR MAP
   //===============================================
+  // Sets the map on all markers in the array.
+  function setMapOnAll(map) {
+    for (var i = 0; i < markers.length; i++) {
+      markers[i].setMap(map);
+    }
+  }
 
-      // Sets the map on all markers in the array.
-      function setMapOnAll(map) {
-        for (var i = 0; i < markers.length; i++) {
-          markers[i].setMap(map);
-        }
-      }
+  // Removes the markers from the map, but keeps them in the array.
+  // The function can be used to toggle markers.
+  function clearMarkers() {
+    setMapOnAll(null);
+  }
 
-      // Removes the markers from the map, but keeps them in the array.
-      function clearMarkers() {
-        setMapOnAll(null);
-      }
-
-      // Deletes all markers in the array by removing references to them.
-      function deleteMarkers() {
-        clearMarkers();
-        markers = [];
-      }
+  // Deletes all markers in the array by removing references to them.
+  function deleteMarkers() {
+    clearMarkers();
+    markers = [];
+  }
   
   //===============================================
   // ADD MARKER
@@ -179,17 +162,12 @@ function autoComplete(){
       },
       map: map
     })
-
-    console.log(infoContent)
     //infoWindow param might break addAllMarkers function
     let infowindow = new google.maps.InfoWindow({
       content: contentString
     })
 
-    console.log(infowindow)
-
     addInfoWindowToMarker(marker, infowindow);
-
     markers.push(marker)
   }
 
@@ -299,6 +277,17 @@ function autoComplete(){
       infowindow.open(map, marker);
     });
   }
+
+  //===============================================
+  // createCenter(lat, lng)
+  // takes google lat and lng objects and returns 
+  // a center object in google maps format
+  //===============================================
+
+  //===============================================
+  // metersToMiles()
+  // google maps distances are in meters by default
+  //===============================================
 
 
 
