@@ -138,8 +138,6 @@ function addMarker(lat, lng, contentString, infowindow){
 
   marker.addListener('click', function(){
     infowindow.setContent(marker.infoContent);
-    console.log(infowindow)
-    //addInfoWindowToMarker(marker, altInfoWindow)
     infowindow.open(map, marker)
   })
 
