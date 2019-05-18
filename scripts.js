@@ -106,18 +106,8 @@ console.log(geojson);
 		if(google.maps.geometry.spherical.computeDistanceBetween(newPoint, center) < radius){
     //create infowindow content
     infoContent = feature.properties;
-
-    contentString = `<div class=info-window-container>
-        <h1>`+ infoContent.Provider_Businness_Legal_Name +`</h1>
-        <p>Address Line 1: ` + infoContent.Provider_Address_City +`</p>
-        <p>City: ` + infoContent.Provider_Address_City +`</p>
-        <p>County: ` + infoContent.Provider_Address_County_Code_De +`</p>
-        <p>Zip: ` + infoContent.Provider_Address_Zip +` </p>
-        <p>Phone: ` + 'phone number needed, google maps places API?' +` </p>
-        <p>Type of Center: ` + infoContent.Provider_Type_Code_Desc +`</p>
-      </div>`
 			//add marker
-      addMarker(feature.geometry.coordinates[1], feature.geometry.coordinates[0], contentString, infoWindowBase, infoContent)
+      addMarker(feature.geometry.coordinates[1], feature.geometry.coordinates[0], infoWindowBase, infoContent)
 		}
 	})
 }
@@ -133,24 +123,20 @@ console.log(geojson);
 //    in order for createInfoWindowObject() to work correctly and dynamically display
 //    the content of the info window
 //===============================================
-function addMarker(lat, lng, contentString, infowindow, infocontent){
+function addMarker(lat, lng, infowindow, infocontent){
   let marker = new google.maps.Marker({
     position: {
       lat: lat, 
       lng: lng
     },
     map: map,
-    //infoContent not part of default marker attributes
-    infoContent: contentString
   })
-  //console.log(infocontent)
+
   let windowObj = createInfoWindowObject(infocontent);
   renderInfoWindow(windowObj)
   let address = infocontent.Provider_Businness_Legal_Name + ' ' + infocontent.Provider_Address_City + ' ' + infocontent.Provider_Address_Zip
 
   marker.addListener('click', function(){
-    //console.log(address)
-    //infowindow.setContent(marker.infoContent);
     infowindow.setContent(renderInfoWindow(windowObj))
     infowindow.open(map, marker)
     getPlacesData(address, infowindow, windowObj)
@@ -167,10 +153,6 @@ function addMarker(lat, lng, contentString, infowindow, infocontent){
 //    fetch the google Places API placeDetails 
 //    set/update infoWindow content with the correct phone number
 //===============================================
-let testAddress = 'HOLLYWOOD WILSHIRE HLTH';
-//let testAddress2 = 'PLANNED PARENTHOOD ASSC, SAN JOSE, CA, 95126';
-//works! add to markers
-//
 function getPlacesData(address, infowindow, windowObj){
   let request = {
     query: address,
@@ -178,7 +160,7 @@ function getPlacesData(address, infowindow, windowObj){
   };
   let service = new google.maps.places.PlacesService(map);
 
-  //async func 1 - getPlaceID()
+  //async func 1 - findPlaceFromQuery() retrieves the place_id
   let details = service.findPlaceFromQuery(request, function(results, status) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       let requestDetails = {
@@ -190,30 +172,14 @@ function getPlacesData(address, infowindow, windowObj){
         if (status === google.maps.places.PlacesServiceStatus.OK) {
           //update infowindow content here to add phone number
           windowObj.phone = place.formatted_phone_number;
-          console.log(windowObj)
-
           infowindow.setContent(renderInfoWindow(windowObj) )
         }
       })
     } else {
-        //return "sorry we can't seem to find that location"
         console.log("sorry we can't seem to find that location")
       }
-    //return level2Data
-    //return newPlace;
     });
-  console.log(details);
-  return details
   }
-
-//===============================================
-// addInfoWindowToMarker()
-//===============================================
-function addInfoWindowToMarker(marker, infowindow, content){
-    marker.addListener('click', function() {
-    infowindow.open(map, marker);
-  });
-}
 
 //===============================================
 // CLEAR MAP
@@ -275,26 +241,4 @@ function renderInfoWindow(dataObj){
       })
 
       return contentString;
-
-      // contentString = `<div class=info-window-container>
-      //   <h1>`+ infoContent.Provider_Businness_Legal_Name +`</h1>
-      //   <p>Address Line 1: ` + infoContent.Provider_Address_City +`</p>
-      //   <p>City: ` + infoContent.Provider_Address_City +`</p>
-      //   <p>County: ` + infoContent.Provider_Address_County_Code_De +`</p>
-      //   <p>Zip: ` + infoContent.Provider_Address_Zip +` </p>
-      //   <p>Phone: ` + 'phone number needed, google maps places API?' +` </p>
-      //   <p>Type of Center: ` + infoContent.Provider_Type_Code_Desc +`</p>
-      // </div>`
-
 }
-
-
-
-
-
-//remove all markers 
-//function removeAllMarkers(geoJson)
-
-//sort by county
-
-  //add marker labels
