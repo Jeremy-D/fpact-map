@@ -3,7 +3,7 @@ let map;
 //track markers to delete
 let markers = [];
 //set infowindow to be accessible when creating marker
-let infowindow;
+let infowindow; //= new google.maps.InfoWindow();
 //===============================================
 //INIT MAP
 //===============================================
@@ -93,56 +93,31 @@ fetch(url1)
 //center - a google maps latLng object (eg ...let center = new google.maps.LatLng(34.0522, -118.2437)...)
 //radius - number (in miles) function converts radius from meters to miles 
 //===============================================
-	function addNearestMarkers(geojson, center, radius){
-  let contentString = '';
-  console.log(geojson);
-		geojson.features.forEach(feature=>{
-			let newPoint = new google.maps.LatLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0])
-			//computeDistanceBetween is part of google maps geometry library loaded in html
-			if(google.maps.geometry.spherical.computeDistanceBetween(newPoint, center) < radius){
-      //add infoWindow
-      infoContent = feature.properties;
+function addNearestMarkers(geojson, center, radius){
+let contentString = '';
+console.log(geojson);
+	geojson.features.forEach(feature=>{
+		let newPoint = new google.maps.LatLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0])
+		//computeDistanceBetween is part of google maps geometry library loaded in html
+		if(google.maps.geometry.spherical.computeDistanceBetween(newPoint, center) < radius){
+    //create infowindow content
+    infoContent = feature.properties;
 
-      //place request
-      //let address = infoContent
-
-
-      contentString = `<div class=info-window-container>
-    <h1>`+ infoContent.Provider_Businness_Legal_Name +`</h1>
-    <p>Alias` + infoContent.Provider_Address_Attention_Line + `</p>
-    <p>City: ` + infoContent.Provider_Address_City +`</p>
-    <p>County: ` + infoContent.Provider_Address_County_Code_De +`</p>
-    <p>Zip: ` + infoContent.Provider_Address_Zip +` </p>
-    <p>Phone: ` + 'phone number needed, google maps places API?' +` </p>
-    <p>Type of Center: ` + infoContent.Provider_Type_Code_Desc +`</p>
-  </div>`
-				//add marker
+    contentString = `<div class=info-window-container>
+        <h1>`+ infoContent.Provider_Businness_Legal_Name +`</h1>
+        <p>Alias` + infoContent.Provider_Address_Attention_Line + `</p>
+        <p>City: ` + infoContent.Provider_Address_City +`</p>
+        <p>County: ` + infoContent.Provider_Address_County_Code_De +`</p>
+        <p>Zip: ` + infoContent.Provider_Address_Zip +` </p>
+        <p>Phone: ` + 'phone number needed, google maps places API?' +` </p>
+        <p>Type of Center: ` + infoContent.Provider_Type_Code_Desc +`</p>
+      </div>`
+			//add marker
       addMarker(feature.geometry.coordinates[1], feature.geometry.coordinates[0], contentString)
-			}
-		})
-	}
-
-//===============================================
-// CLEAR MAP
-//===============================================
-// Sets the map on all markers in the array.
-function setMapOnAll(map) {
-  for (var i = 0; i < markers.length; i++) {
-    markers[i].setMap(map);
-  }
+		}
+	})
 }
 
-// Removes the markers from the map, but keeps them in the array.
-// The function can be used to toggle markers.
-function clearMarkers() {
-  setMapOnAll(null);
-}
-
-// Deletes all markers in the array by removing references to them.
-function deleteMarkers() {
-  clearMarkers();
-  markers = [];
-}
 
 //===============================================
 // ADD MARKER
@@ -155,7 +130,6 @@ function addMarker(lat, lng, contentString){
     },
     map: map
   })
-  //infoWindow param might break addAllMarkers function
 
   let infowindow = new google.maps.InfoWindow({
     content: contentString
@@ -220,50 +194,6 @@ function getPlacesData(address){
   return details
   }
 
-  //--private to getPlacesData()=================================================
-
-  //================== 
-  //getPlaceID() takes an address and returns a place ID
-  //================== 
-  function getPlaceID(address, service){
-    let request = {
-      query: address,
-      fields: ['name', 'geometry', 'place_id']
-    };
-    //Initiate Google PlacesService
-    let placeService = new google.maps.places.PlacesService(map);
-    //findPlaceFromQuery() call
-
-    let details1 = placeQueryAsync(request, placeService, pQAHelper);
-
-    console.log(details1);
-    return details1;
-  }
-
-  //================== 
-  //placeQueryAsync(){}
-  //service.findPlaceFromQuery() needs to be wrapped in a function
-  //that returns a promise
-  //================== 
-  function placeQueryAsync(request, service, fn){
-    service.findPlaceFromQuery(request, function(results, status) {   
-      if (status === google.maps.places.PlacesServiceStatus.OK) {
-        fn(results[0].place_id)
-      } else {
-          console.log("sorry we can't seem to find that location")
-        }
-      })
-  };
-
-  let pleaseWork;
-
-  function pQAHelper(code){
-    pleaseWork = code;
-  }
-
-
-
-
 //===============================================
 // addInfoWindowToMarker()
 //===============================================
@@ -273,6 +203,27 @@ function addInfoWindowToMarker(marker, infowindow, content){
   });
 }
 
+//===============================================
+// CLEAR MAP
+//===============================================
+// Sets the map on all markers in the array.
+function setMapOnAll(map) {
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(map);
+  }
+}
+
+// Removes the markers from the map, but keeps them in the array.
+// The function can be used to toggle markers.
+function clearMarkers() {
+  setMapOnAll(null);
+}
+
+// Deletes all markers in the array by removing references to them.
+function deleteMarkers() {
+  clearMarkers();
+  markers = [];
+}
 
 //===============================================
 // metersToMiles()

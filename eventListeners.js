@@ -44,7 +44,7 @@ btnTestes2.addEventListener("click", function(){
 })
 
 searchInput.addEventListener("mouseover", function(){
-	autoComplete();
+	//autoComplete();
 })
 
 submitBtn.addEventListener("click", function(){
