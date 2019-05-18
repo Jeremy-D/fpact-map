@@ -82,19 +82,6 @@ fetch(url1)
   });
 
   //===============================================
-  // ADD ALL MARKERS
-  //===============================================
-  function addAllMarkers(geojson){
-  	geojson.features.forEach(feature=>{
-      addMarker(feature.geometry.coordinates[1], feature.geometry.coordinates[0])
-  	})
-  }
-
- 	let center = {lat: 34.0522, lng: -118.2437}
- 	let radius = 5 * 1609; //meters to miles 
-
-
-  //===============================================
   // ADD NEAREST MARKERS (geojson, center, radius)
   //geojson - a geojson object
   //center - a google maps latLng object (eg ...let center = new google.maps.LatLng(34.0522, -118.2437)...)
@@ -163,10 +150,12 @@ fetch(url1)
       map: map
     })
     //infoWindow param might break addAllMarkers function
+
     let infowindow = new google.maps.InfoWindow({
       content: contentString
     })
-
+    console.log(marker)
+    console.log(infowindow)
     addInfoWindowToMarker(marker, infowindow);
     markers.push(marker)
   }
@@ -278,11 +267,6 @@ fetch(url1)
     });
   }
 
-  //===============================================
-  // createCenter(lat, lng)
-  // takes google lat and lng objects and returns 
-  // a center object in google maps format
-  //===============================================
 
   //===============================================
   // metersToMiles()
