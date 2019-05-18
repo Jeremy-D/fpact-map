@@ -109,7 +109,6 @@ console.log(geojson);
 
     contentString = `<div class=info-window-container>
         <h1>`+ infoContent.Provider_Businness_Legal_Name +`</h1>
-        <p>Alias` + infoContent.Provider_Address_Attention_Line + `</p>
         <p>Address Line 1: ` + infoContent.Provider_Address_City +`</p>
         <p>City: ` + infoContent.Provider_Address_City +`</p>
         <p>County: ` + infoContent.Provider_Address_County_Code_De +`</p>
@@ -126,6 +125,13 @@ console.log(geojson);
 
 //===============================================
 // ADD MARKER
+//addMarker(lat, lng, contentString, infowindow, infocontent)
+//Notes:
+//  - infowindow is set in parent scope of add marker to avoid having multiple 
+//    infowindows and cluttering the UI
+//  - infocontent must be in the form that the data is retrieved from the FPACT data set
+//    in order for createInfoWindowObject() to work correctly and dynamically display
+//    the content of the info window
 //===============================================
 function addMarker(lat, lng, contentString, infowindow, infocontent){
   let marker = new google.maps.Marker({
@@ -137,16 +143,17 @@ function addMarker(lat, lng, contentString, infowindow, infocontent){
     //infoContent not part of default marker attributes
     infoContent: contentString
   })
-  console.log(infocontent)
-
+  //console.log(infocontent)
+  let windowObj = createInfoWindowObject(infocontent);
+  renderInfoWindow(windowObj)
   let address = infocontent.Provider_Businness_Legal_Name + ' ' + infocontent.Provider_Address_City + ' ' + infocontent.Provider_Address_Zip
-  //console.log(address)
 
   marker.addListener('click', function(){
-    console.log(address)
-    infowindow.setContent(marker.infoContent);
+    //console.log(address)
+    //infowindow.setContent(marker.infoContent);
+    infowindow.setContent(renderInfoWindow(windowObj))
     infowindow.open(map, marker)
-    getPlacesData(address, infowindow)
+    getPlacesData(address, infowindow, windowObj)
   })
 
   markers.push(marker)
@@ -163,9 +170,8 @@ function addMarker(lat, lng, contentString, infowindow, infocontent){
 let testAddress = 'HOLLYWOOD WILSHIRE HLTH';
 //let testAddress2 = 'PLANNED PARENTHOOD ASSC, SAN JOSE, CA, 95126';
 //works! add to markers
-
 //
-function getPlacesData(address, infowindow){
+function getPlacesData(address, infowindow, windowObj){
   let request = {
     query: address,
     fields: ['name', 'geometry', 'place_id']
@@ -175,7 +181,6 @@ function getPlacesData(address, infowindow){
   //async func 1 - getPlaceID()
   let details = service.findPlaceFromQuery(request, function(results, status) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
-      console.log(results[0].place_id)
       let requestDetails = {
         placeId: results[0].place_id,
         fields: ['name', 'formatted_address', 'formatted_phone_number', 'place_id', 'geometry']
@@ -184,8 +189,10 @@ function getPlacesData(address, infowindow){
       let level2Data = service.getDetails(requestDetails, function(place, status){
         if (status === google.maps.places.PlacesServiceStatus.OK) {
           //update infowindow content here to add phone number
-          console.log(place)
-          infowindow.setContent(place.name + place.formatted_phone_number )
+          windowObj.phone = place.formatted_phone_number;
+          console.log(windowObj)
+
+          infowindow.setContent(renderInfoWindow(windowObj) )
         }
       })
     } else {
@@ -231,13 +238,53 @@ function deleteMarkers() {
 }
 
 //===============================================
-// createInfoWindowContent(featureData)
+// createInfoWindowObject(featureData)
+// creates an object to be passed into createInfoWindowContent()
+
+//===============================================
+
+function createInfoWindowObject(featureData){
+  let infoWindowData = {}
+  infoWindowData.title = featureData.Provider_Businness_Legal_Name;
+  infoWindowData.address = featureData.Provider_Address_Line_1;
+  infoWindowData.city = featureData.Provider_Address_City;
+  infoWindowData.zip = featureData.Provider_Address_Zip;
+  infoWindowData.phone = 'Retrieving phone number ...';
+  //category anti pattern
+  infoWindowData.category = featureData.Provider_Type_Code_Desc;
+  return infoWindowData;
+}
+
+//===============================================
+// renderInfoWindow(featureData)
 // uses the feature data from the FPACT data set
 // to create an infowindow with all relevant data
 //===============================================
 
-function createInfoWindowContent(dataObj){
-  Object(dataObj).keys().forEach
+function renderInfoWindow(dataObj){
+      let contentString = ''
+
+      Object.keys(dataObj).forEach(key=>{
+        if(key === 'title'){
+          contentString += '<h1>' + dataObj[key] + '</h1>'
+        } else if (key === 'category') {
+          contentString += '<p>' + key + ':' + dataObj[key] + '</p>'
+        } else {
+          contentString += '<p>' + dataObj[key] + '</p>'
+        }
+      })
+
+      return contentString;
+
+      // contentString = `<div class=info-window-container>
+      //   <h1>`+ infoContent.Provider_Businness_Legal_Name +`</h1>
+      //   <p>Address Line 1: ` + infoContent.Provider_Address_City +`</p>
+      //   <p>City: ` + infoContent.Provider_Address_City +`</p>
+      //   <p>County: ` + infoContent.Provider_Address_County_Code_De +`</p>
+      //   <p>Zip: ` + infoContent.Provider_Address_Zip +` </p>
+      //   <p>Phone: ` + 'phone number needed, google maps places API?' +` </p>
+      //   <p>Type of Center: ` + infoContent.Provider_Type_Code_Desc +`</p>
+      // </div>`
 
 }
 
