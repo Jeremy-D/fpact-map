@@ -24,18 +24,7 @@ btn.addEventListener("click", function(){
 
 	//test5
 	let testAddress2 = 'PLANNED PARENTHOOD ASSC, SAN JOSE, CA, 95126';
-	//let testPlace = getPlacesData(testAddress2);
-	let testPlace = getPlaceID(testAddress2);
-	//check event listener
-	// console.log('check event listener')
-	// console.log(testPlace);
-	console.log('please work')
-	setTimeout(function(){console.log(pleaseWork)}, 1000);
-
-
-
-	let iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
-	//iconBase + 'info-i_maps.png'
+	let testPlace = getPlacesData(testAddress2);
 })
 
 btnTestes2.addEventListener("click", function(){

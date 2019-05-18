@@ -97,6 +97,7 @@ function addNearestMarkers(geojson, center, radius){
 let infoWindowBase = new google.maps.InfoWindow({
   content: 'YOLO'
 });
+
 let contentString = '';
 console.log(geojson);
 	geojson.features.forEach(feature=>{
@@ -109,6 +110,7 @@ console.log(geojson);
     contentString = `<div class=info-window-container>
         <h1>`+ infoContent.Provider_Businness_Legal_Name +`</h1>
         <p>Alias` + infoContent.Provider_Address_Attention_Line + `</p>
+        <p>Address Line 1: ` + infoContent.Provider_Address_City +`</p>
         <p>City: ` + infoContent.Provider_Address_City +`</p>
         <p>County: ` + infoContent.Provider_Address_County_Code_De +`</p>
         <p>Zip: ` + infoContent.Provider_Address_Zip +` </p>
@@ -116,7 +118,7 @@ console.log(geojson);
         <p>Type of Center: ` + infoContent.Provider_Type_Code_Desc +`</p>
       </div>`
 			//add marker
-      addMarker(feature.geometry.coordinates[1], feature.geometry.coordinates[0], contentString, infoWindowBase)
+      addMarker(feature.geometry.coordinates[1], feature.geometry.coordinates[0], contentString, infoWindowBase, infoContent)
 		}
 	})
 }
@@ -125,7 +127,7 @@ console.log(geojson);
 //===============================================
 // ADD MARKER
 //===============================================
-function addMarker(lat, lng, contentString, infowindow){
+function addMarker(lat, lng, contentString, infowindow, infocontent){
   let marker = new google.maps.Marker({
     position: {
       lat: lat, 
@@ -135,36 +137,40 @@ function addMarker(lat, lng, contentString, infowindow){
     //infoContent not part of default marker attributes
     infoContent: contentString
   })
+  console.log(infocontent)
+
+  let address = infocontent.Provider_Businness_Legal_Name + ' ' + infocontent.Provider_Address_City + ' ' + infocontent.Provider_Address_Zip
+  //console.log(address)
 
   marker.addListener('click', function(){
+    console.log(address)
     infowindow.setContent(marker.infoContent);
     infowindow.open(map, marker)
+    getPlacesData(address, infowindow)
   })
 
   markers.push(marker)
 }
 
 //===============================================
-// address query test
-//-- get's the phone number
-//figure out async await stuff
+//getPlacesData(address, infowindow)
+//Uses address built on the FPACT geojson feature data from a marker
+//in order to:
+//  fetch the place ID
+//    fetch the google Places API placeDetails 
+//    set/update infoWindow content with the correct phone number
 //===============================================
 let testAddress = 'HOLLYWOOD WILSHIRE HLTH';
 //let testAddress2 = 'PLANNED PARENTHOOD ASSC, SAN JOSE, CA, 95126';
 //works! add to markers
 
-let superTest;
-
-
-function getPlacesData(address){
+//
+function getPlacesData(address, infowindow){
   let request = {
     query: address,
     fields: ['name', 'geometry', 'place_id']
   };
-  
   let service = new google.maps.places.PlacesService(map);
-
-  let newPlace;
 
   //async func 1 - getPlaceID()
   let details = service.findPlaceFromQuery(request, function(results, status) {
@@ -174,17 +180,12 @@ function getPlacesData(address){
         placeId: results[0].place_id,
         fields: ['name', 'formatted_address', 'formatted_phone_number', 'place_id', 'geometry']
       }
-
       //async func 2 - getDetails()
       let level2Data = service.getDetails(requestDetails, function(place, status){
         if (status === google.maps.places.PlacesServiceStatus.OK) {
-          //marker must be added at this point to get async data like phone number from Places API
-          superTest = place;
-          console.log('superTest');
-          console.log(superTest);
-          console.log('place');
-          console.log(place);
-          return place
+          //update infowindow content here to add phone number
+          console.log(place)
+          infowindow.setContent(place.name + place.formatted_phone_number )
         }
       })
     } else {
@@ -230,10 +231,15 @@ function deleteMarkers() {
 }
 
 //===============================================
-// metersToMiles()
-// google maps distances are in meters by default
+// createInfoWindowContent(featureData)
+// uses the feature data from the FPACT data set
+// to create an infowindow with all relevant data
 //===============================================
 
+function createInfoWindowContent(dataObj){
+  Object(dataObj).keys().forEach
+
+}
 
 
 
