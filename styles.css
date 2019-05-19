@@ -18,12 +18,19 @@
 }
 
 /*-------------HEADER-----------*/
+.header-offset,
+.header {
+	height:4rem;
+}
+
 .header{
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	height:4rem;
 	background-color: #79007C;
+	position:fixed;
+	width:100%;
+	z-index:1;
 }
 
 .header-left {
@@ -64,12 +71,22 @@
 
 .features-bar {
 	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.features-bar > * {
+	margin:1rem;
+}
+
+.search-container{
+	display: flex;
 	flex-direction: row;
 	justify-content: center;
 	/*background-color: #dbb3ff;*/
 }
 
-.features-bar > * {
+.search-container > * {
 	margin:1rem;
 }
 
@@ -109,7 +126,7 @@
 /*-------------About-----------*/
 
 .about {
-	height: 100vh;
+	height: 50vh;
 	background:lavender;
 }
 

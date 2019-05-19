@@ -10,6 +10,7 @@
     <noscript>
       JavaScript must be enabled to run this app.
     </noscript>
+
     <div class="header">
       <div class="header-left">
 
@@ -17,44 +18,49 @@
       </div>
 
       <div class="header-right">
-        <a href="">Home</a>
-        <a href="">About</a>
-        <a href="">Contact</a>
+        <a href="#">Home</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
       </div>
     </div>
+    <div class="header-offset"></div>
     <div id="map"></div>
 
 
 
     <div id="features-bar" class="features-bar">
-      <div class="search-bar feature-item" id="search-bar">
-        <label>Search:</label>
-        <input type="text" id="search-input" class="search-input" placeholder="Enter a location">
-      </div>
+      <h3>Enter a location or click the map to see providers near you.</h3>
+      <div class="search-container">
+        
+        <div class="search-bar feature-item" id="search-bar">
+          <label>Search:</label>
+          <input type="text" id="search-input" class="search-input" placeholder="Enter a location">
+        </div>
 
-      <div id="set-radius" class="set-radius feature-item">
-        <label>Set Radius:</label>
-        <select id="radius-select">
-          <option value="5">5 Miles</option>
-          <option value="10">10 Miles</option>
-          <option value="15">15 Miles</option>
-          <option value="25">25 Miles</option>
-          <option value="1500">View All</option>
-        </select>  
+        <div id="set-radius" class="set-radius feature-item">
+          <label>Set Radius:</label>
+          <select id="radius-select">
+            <option value="5">5 Miles</option>
+            <option value="10">10 Miles</option>
+            <option value="15">15 Miles</option>
+            <option value="25">25 Miles</option>
+            <option value="1500">View All</option>
+          </select>  
+        </div>
       </div>
 
 <!--       <div id="test-btn-container">
         <button id="test-btn">test (phone number query)</button>
         <button id="test-btn-2"> test 2</button>
       </div> -->
+      <div class="search-logo">
+        <img src="img/fpactLogo1.png">
+      </div>
     </div>
 
-    <div class="search-logo">
-      <img src="img/fpactLogo1.png">
-    </div>
 
-    <div class="about">Lorem ipsum</div>
-    <div class="contact">Lorem ipsum</div>
+    <div class="about" id="about">Lorem ipsum- About</div>
+    <div class="contact" id="contact">Lorem ipsum -Contact</div>
 
     <script type="text/javascript" src="scripts.js"></script>    
     <script type="text/javascript" src="eventListeners.js"></script>

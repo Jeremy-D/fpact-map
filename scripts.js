@@ -232,7 +232,7 @@ function renderInfoWindow(dataObj){
 
       Object.keys(dataObj).forEach(key=>{
         if(key === 'title'){
-          contentString += '<h1>' + dataObj[key] + '</h1>'
+          contentString += '<h3>' + dataObj[key] + '</h3>'
         } else if (key === 'category') {
           contentString += '<p>' + key + ':' + dataObj[key] + '</p>'
         } else {
