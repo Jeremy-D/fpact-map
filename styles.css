@@ -1,3 +1,12 @@
+/*-------------COLORS-----------*/
+/*
+#79007C - FPACT LIGHT PURPLE
+#370066 - FPACT DARK PURPLE 
+#FF041D - FPACT HEART RED
+
+#dbb3ff - light purple
+*/
+
 * {
 	margin: 0;
 	padding: 0;
@@ -6,8 +15,52 @@
 
 #map {
 	height: 500px;
-	background-color: lavender;
 }
+
+/*-------------HEADER-----------*/
+.header{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	height:4rem;
+	background-color: #79007C;
+}
+
+.header-left {
+	margin-left:3rem;
+	color:#fff;
+}
+
+.header-right {
+	display: flex;
+	align-items: center;
+	height: 100%;
+	margin-right: 3rem;
+}
+
+.header-right > a{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	/*margin-right: 20px;*/
+	text-decoration: none;
+
+	height: 100%;
+	width:4rem;
+	color:#fff;
+}
+
+.header-right > a:hover{
+	background-color:#fff ;
+	color:#370066;
+}
+
+.header-center,
+.header-center img {
+	height:100%;
+}
+
+/*-------------CONTENT BELOW MAP-----------*/
 
 .features-bar {
 	display: flex;
